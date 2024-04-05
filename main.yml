@@ -15,6 +15,7 @@
     - name: OS specific packages
       include_tasks: "{{ ansible_os_family }}.yml"
     - name: Set shell to zsh
+      become: true
       user:
         name: "{{ ansible_user_id }}"
         shell: "/bin/zsh"
