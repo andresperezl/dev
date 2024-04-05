@@ -11,6 +11,8 @@
       with_items:
         - "{{ ansible_env.HOME }}/personal"
         - "{{ ansible_env.HOME }}/work"
+        - "{{ ansible_env.HOME }}/.config"
+        - "{{ ansible_env.HOME }}/.config/tms"
         - "{{ playbook_dir }}/scripts"
     - name: OS specific packages
       include_tasks: "{{ ansible_os_family }}.yml"
