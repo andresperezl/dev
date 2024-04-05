@@ -26,7 +26,7 @@
       - repo: https://github.com/neovim/neovim
         dest: neovim
         depth: 1
-      - repo: git@github.com:andresperezl/kickstart.nvim
+      - repo: github.com/andresperezl/kickstart.nvim
         dest: "{{ ansible_env.HOME }}/.config/nvim"
         depth: 1
     - name: Build Neovim
