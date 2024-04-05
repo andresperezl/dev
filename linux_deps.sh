@@ -15,3 +15,5 @@ else
     sudo pipx ensurepath --global # optional to allow pipx actions with --global argument
 fi
 
+export PATH=$PATH:$HOME/.local/bin
+
