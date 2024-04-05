@@ -1,7 +1,11 @@
 [[search_dirs]]
-path = "/home/aperez/personal"
+path = "~/personal"
 depth = 10
 
 [[search_dirs]]
-path = "/home/aperez/work"
+path = "~/work"
+depth = 10
+
+[[search_dirs]]
+path = "~/repos"
 depth = 10
