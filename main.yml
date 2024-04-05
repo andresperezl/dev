@@ -4,7 +4,6 @@
   gather_facts: no
   tasks:
     - ansible.builtin.setup: {}
-    - include_tasks: "{{ ansible_os_family }}.yml"
     - name: Create directories
       ansible.builtin.file:
         path: "{{ item }}"
@@ -12,6 +11,13 @@
       with_items:
         - "{{ ansible_env.HOME }}/personal"
         - "{{ ansible_env.HOME }}/work"
+        - "{{ playbook_dir }}/scripts"
+    - name: OS specific packages
+      include_tasks: "{{ ansible_os_family }}.yml"
+    - name: Set shell to zsh
+      user:
+        name: "{{ ansible_user_id }}"
+        shell: "/bin/zsh"
     - name: Clone repos
       ansible.builtin.git:
         "{{ item }}"
@@ -35,10 +41,10 @@
     - name: Get tms install script
       ansible.builtin.get_url:
         url: https://github.com/jrmoulton/tmux-sessionizer/releases/download/v0.4.2/tmux-sessionizer-installer.sh
-        dest: .
+        dest: scripts
         mode: "0755"
     - name: Install tms
-      shell: ./tmux-sessionizer-installer.sh
+      shell: "scripts/tmux-sessionizer-installer.sh"
     - name: Symlink configs
       ansible.builtin.file:
         state: link
@@ -53,16 +59,17 @@
     - name: Get oh-my-zsh
       ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
-        dest: ./install-omz.sh
+        dest: "scripts/install-omz.sh"
         mode: "0755"
     - name: Install oh-my-zsh
       shell: 
-        cmd: "./install-omz.sh"
+        cmd: "scripts/install-omz.sh"
         creates: "{{ ansible_env.HOME }}/.oh-my-zsh"
       environment:
         ZSH: ""
     - name: Remove g alias from omz
       lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
         state: present
         line: "{{ item }}"
       with_items:
@@ -72,4 +79,11 @@
         - alias bat=batcat
         - alias cat=batcat
         - EDITOR=nvim; export EDITOR
+    - name: Get g install script
+      ansible.builtin.get_url:
+        url: https://git.io/g-install
+        dest: scripts/g-install.sh
+        mode: "0755"
+    - name: Install g
+      shell: scripts/g-install.sh zsh -y
 

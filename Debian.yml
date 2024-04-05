@@ -15,5 +15,20 @@
     - ripgrep
     - fzf
     - bat
+- name: Get lazygit latest version
+  shell: |-
+    curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*'
+  register: lazygit_version
+- name: Get lazygit tar
+  get_url:
+    url: "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_{{ lazygit_version.stdout }}_Linux_x86_64.tar.gz"
+    dest: scripts/lazygit.tgz
+- name: Install lazygit
+  become: true
+  unarchive:
+    src: script/lazygit.tgz
+    dest: /usr/local/bin/
+    mode: "0755"
+    creates: /usr/local/bin/lazygit
+    include:
     - lazygit
-
