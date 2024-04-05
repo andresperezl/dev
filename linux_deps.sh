@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-RELEASE=$(lsb_release -r | awk '{print $2}' | cut -f1 -d'.')
+RELEASE=$(cat /etc/lsb-release | grep DISTRIB_RELEASE| cut -f2 -d'=' | cut -f1 -d'.')
 
 sudo apt update
 
