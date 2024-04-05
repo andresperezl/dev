@@ -1,0 +1,19 @@
+- name: Install packages
+  become: true
+  ansible.builtin.package:
+    name:
+    - ninja-build
+    - gettext
+    - cmake
+    - unzip
+    - curl
+    - build-essential
+    - git
+    - jq
+    - tmux
+    - zsh
+    - ripgrep
+    - fzf
+    - bat
+    - lazygit
+

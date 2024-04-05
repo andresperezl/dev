@@ -1,0 +1,7 @@
+[[search_dirs]]
+path = "/home/aperez/personal"
+depth = 10
+
+[[search_dirs]]
+path = "/home/aperez/work"
+depth = 10

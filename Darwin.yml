@@ -1,0 +1,19 @@
+- name: Install Xcode
+  shell: xcode-select --install
+
+- name: Install packages
+  ansible.builtin.package:
+    name:
+    - ninja
+    - cmake
+    - gettext
+    - curl
+    - git
+    - jq
+    - tmux
+    - zsh
+    - ripgrep
+    - fzf
+    - bat
+    - lazygit
+

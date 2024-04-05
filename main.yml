@@ -1,0 +1,75 @@
+- name: Dev environment installer
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - ansible.builtin.setup: {}
+    - include_tasks: "{{ ansible_os_family }}.yml"
+    - name: Create directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ ansible_env.HOME }}/personal"
+        - "{{ ansible_env.HOME }}/work"
+    - name: Clone repos
+      ansible.builtin.git:
+        "{{ item }}"
+      with_items:
+      - repo: https://github.com/neovim/neovim
+        dest: neovim
+        depth: 1
+      - repo: git@github.com:andresperezl/kickstart.nvim
+        dest: "{{ ansible_env.HOME }}/.config/nvim"
+        depth: 1
+    - name: Build Neovim
+      community.general.make:
+        chdir: neovim
+        params:
+          CMAKE_BUILD_TYPE: RelWithDebInfo
+    - name: Install Neovim
+      become: true
+      community.general.make:
+        chdir: neovim
+        target: install
+    - name: Get tms install script
+      ansible.builtin.get_url:
+        url: https://github.com/jrmoulton/tmux-sessionizer/releases/download/v0.4.2/tmux-sessionizer-installer.sh
+        dest: .
+        mode: "0755"
+    - name: Install tms
+      shell: ./tmux-sessionizer-installer.sh
+    - name: Symlink configs
+      ansible.builtin.file:
+        state: link
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        force: yes
+      with_items:
+        - src: "{{ playbook_dir }}/configs/tmux.conf"
+          dest: "{{ ansible_env.HOME }}/.tmux.conf"
+        - src: "{{ playbook_dir }}/configs/tms_config.toml"
+          dest: "{{ ansible_env.HOME }}/.config/tms/config.toml"
+    - name: Get oh-my-zsh
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+        dest: ./install-omz.sh
+        mode: "0755"
+    - name: Install oh-my-zsh
+      shell: 
+        cmd: "./install-omz.sh"
+        creates: "{{ ansible_env.HOME }}/.oh-my-zsh"
+      environment:
+        ZSH: ""
+    - name: Remove g alias from omz
+      lineinfile:
+        state: present
+        line: "{{ item }}"
+      with_items:
+        - unalias g
+        - alias vi=nvim
+        - alias vim=nvim
+        - alias bat=batcat
+        - alias cat=batcat
+        - EDITOR=nvim; export EDITOR
+
