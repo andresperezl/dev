@@ -15,6 +15,8 @@
     - ripgrep
     - fzf
     - bat
+    - fd-find
+    - fswatch
 - name: Get lazygit latest version
   shell: |-
     curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*'
