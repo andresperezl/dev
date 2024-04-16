@@ -9,3 +9,8 @@ depth = 10
 [[search_dirs]]
 path = "~/repos"
 depth = 10
+
+[[search_dirs]]
+path = "~/.config/nvim"
+depth = 0
+
