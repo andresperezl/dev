@@ -4,6 +4,9 @@
 
 brew install pipx
 pipx ensurepath
-sudo pipx ensurepath --global # optional to allow pipx actions with --global argument
+sudo pipx --global ensurepath 
 
 export PATH=$PATH:$HOME/.local/bin
+(echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/andres.perezleon/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+

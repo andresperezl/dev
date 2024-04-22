@@ -1,11 +1,8 @@
-- name: Install Xcode
-  shell: xcode-select --install
-
 - name: Install packages
-  ansible.builtin.package:
+  community.general.homebrew: 
     name:
     - ninja
-    - cmake
+    - homebrew/cask/cmake
     - gettext
     - curl
     - git

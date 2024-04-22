@@ -11,6 +11,7 @@
       with_items:
         - "{{ ansible_env.HOME }}/personal"
         - "{{ ansible_env.HOME }}/work"
+        - "{{ ansible_env.HOME }}/repos"
         - "{{ ansible_env.HOME }}/.config"
         - "{{ ansible_env.HOME }}/.config/tms"
         - "{{ playbook_dir }}/scripts"
@@ -28,7 +29,7 @@
       - repo: https://github.com/neovim/neovim
         dest: neovim
         depth: 1
-      - repo: https://github.com/andresperezl/kickstart.nvim
+      - repo: git@github.com:andresperezl/kickstart.nvim
         dest: "{{ ansible_env.HOME }}/.config/nvim"
         depth: 1
     - name: Build Neovim
@@ -79,9 +80,9 @@
         - unalias g
         - alias vi=nvim
         - alias vim=nvim
-        - alias bat=batcat
-        - alias cat=batcat
+        - alias cat=bat
         - EDITOR=nvim; export EDITOR
+        - source $HOME/.cargo/env
     - name: Get g install script
       ansible.builtin.get_url:
         url: https://git.io/g-install
