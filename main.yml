@@ -23,15 +23,17 @@
         name: "{{ ansible_user_id }}"
         shell: "/bin/zsh"
     - name: Clone repos
-      ansible.builtin.git:
-        "{{ item }}"
+      ansible.builtin.git: "{{ item }}"
       with_items:
-      - repo: https://github.com/neovim/neovim
-        dest: neovim
-        depth: 1
-      - repo: git@github.com:andresperezl/kickstart.nvim
-        dest: "{{ ansible_env.HOME }}/.config/nvim"
-        depth: 1
+        - repo: https://github.com/neovim/neovim
+          dest: neovim
+          depth: 1
+        - repo: git@github.com:andresperezl/kickstart.nvim
+          dest: "{{ ansible_env.HOME }}/.config/nvim"
+          depth: 1
+        - repo: https://github.com/tmux-plugins/tpm
+          dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+          depth: 1
     - name: Build Neovim
       community.general.make:
         chdir: neovim
@@ -66,12 +68,12 @@
         dest: "scripts/install-omz.sh"
         mode: "0755"
     - name: Install oh-my-zsh
-      shell: 
+      shell:
         cmd: "scripts/install-omz.sh"
         creates: "{{ ansible_env.HOME }}/.oh-my-zsh"
       environment:
         ZSH: ""
-    - name: Remove g alias from omz
+    - name: Set up .zshrc
       lineinfile:
         path: "{{ ansible_env.HOME }}/.zshrc"
         state: present
@@ -83,6 +85,10 @@
         - alias cat=bat
         - EDITOR=nvim; export EDITOR
         - source $HOME/.cargo/env
+        - export NVM_DIR="$HOME/.nvm"
+        - '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' # This loads nvm
+        - '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' # This loads nvm bash_completion
+        - export GPG_TTY=$TTY
     - name: Get g install script
       ansible.builtin.get_url:
         url: https://git.io/g-install
@@ -90,4 +96,16 @@
         mode: "0755"
     - name: Install g
       shell: scripts/g-install.sh zsh -y
-
+    - name: Get oh-my-zsh
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh
+        dest: "scripts/install-nvm.sh"
+        mode: "0755"
+    - name: Install nvm
+      shell:
+        cmd: "scripts/install-nvm.sh"
+        creates: "{{ ansible_env.HOME }}/.nvm"
+    - name: Install node/npm
+      shell: . $NVM_DIR/nvm.sh && nvm install --lts
+      environment:
+        NVM_DIR: "{{ ansible_env.HOME }}/.nvm"

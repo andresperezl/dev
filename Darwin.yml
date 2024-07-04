@@ -1,18 +1,26 @@
+- name: Remove conflicting files
+  file:
+    state: absent
+    path: "{{ item }}"
+  with_items:
+    - /opt/homebrew/bin/cpack
+    - /opt/homebrew/bin/ctest
+    - /opt/homebrew/bin/ccmake
+    - /opt/homebrew/bin/cmake
 - name: Install packages
-  community.general.homebrew: 
+  community.general.homebrew:
     name:
-    - ninja
-    - homebrew/cask/cmake
-    - gettext
-    - curl
-    - git
-    - jq
-    - tmux
-    - zsh
-    - ripgrep
-    - fzf
-    - bat
-    - lazygit
-    - fd
-    - fswatch
-
+      - ninja
+      - homebrew/cask/cmake
+      - gettext
+      - curl
+      - git
+      - jq
+      - tmux
+      - zsh
+      - ripgrep
+      - fzf
+      - bat
+      - lazygit
+      - fd
+      - fswatch
